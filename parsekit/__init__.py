@@ -1,12 +1,20 @@
 from collections import namedtuple
+from typing import Any, NamedTuple
 
 
-class Success(namedtuple("Success", ["start", "end", "value"])):
+class Success(NamedTuple):
+    start: int
+    end: int
+    value: Any
+
     def __bool__(self):
         return True
 
 
-class Failure(namedtuple("Failure", ["pos", "expected"])):
+class Failure(NamedTuple):
+    pos: int
+    expected: str
+
     def __bool__(self):
         return False
 
