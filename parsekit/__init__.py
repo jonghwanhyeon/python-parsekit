@@ -43,7 +43,7 @@ class Parser:
         return transform(self, lambda value: function(*value))
 
     def __add__(self, other):
-        return seq(self, other)
+        return sequence(self, other)
 
     def __mul__(self, operand):
         if isinstance(operand, int):
