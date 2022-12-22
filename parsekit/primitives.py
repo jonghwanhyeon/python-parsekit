@@ -1,5 +1,6 @@
 import re
-from . import Parser, Success, Failure
+
+from . import Failure, Parser, Success
 
 
 def string(text):

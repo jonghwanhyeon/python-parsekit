@@ -1,5 +1,6 @@
 import sys
-from . import Parser, Success, Failure
+
+from . import Failure, Parser, Success
 
 
 def then(*parsers):

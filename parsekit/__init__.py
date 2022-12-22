@@ -1,12 +1,12 @@
 from collections import namedtuple
 
 
-class Success(namedtuple('Success', ['start', 'end', 'value'])):
+class Success(namedtuple("Success", ["start", "end", "value"])):
     def __bool__(self):
         return True
 
 
-class Failure(namedtuple('Failure', ['pos', 'expected'])):
+class Failure(namedtuple("Failure", ["pos", "expected"])):
     def __bool__(self):
         return False
 
@@ -61,5 +61,5 @@ class Parser:
         return then(self, other)
 
 
-from .primitives import *  # noqa
 from .combinators import *  # noqa
+from .primitives import *  # noqa
