@@ -1,12 +1,14 @@
 import sys
+from typing import Any, Callable, Optional
 
 from parsekit import Failure, Parser, Success
+from parsekit.typing import Result
 from parsekit.utils import stringify
 
 
-def then(*parsers):
+def then(*parsers: Parser) -> Parser:
     @Parser
-    def then_parser(stream, pos):
+    def then_parser(stream: str, pos: int) -> Result:
         start = pos
 
         for parser in parsers:
@@ -20,9 +22,9 @@ def then(*parsers):
     return then_parser
 
 
-def skip(*parsers):
+def skip(*parsers: Parser) -> Parser:
     @Parser
-    def skip_parser(stream, pos):
+    def skip_parser(stream: str, pos: int) -> Result:
         start = pos
 
         first_result = None
@@ -40,9 +42,9 @@ def skip(*parsers):
     return skip_parser
 
 
-def sequence(*parsers):
+def sequence(*parsers: Parser) -> Parser:
     @Parser
-    def sequence_parser(stream, pos):
+    def sequence_parser(stream: str, pos: int) -> Result:
         start = pos
 
         values = []
@@ -58,9 +60,9 @@ def sequence(*parsers):
     return sequence_parser
 
 
-def either(*parsers):
+def either(*parsers: Parser) -> Parser:
     @Parser
-    def either_parser(stream, pos):
+    def either_parser(stream: str, pos: int) -> Result:
         for parser in parsers:
             result = parser(stream, pos)
             if result:
@@ -70,9 +72,9 @@ def either(*parsers):
     return either_parser
 
 
-def optional(parser, default=None):
+def optional(parser: Parser, default=None) -> Parser:
     @Parser
-    def optional_parser(stream, pos):
+    def optional_parser(stream: str, pos: int) -> Result:
         result = parser(stream, pos)
         if result:
             return result
@@ -81,9 +83,9 @@ def optional(parser, default=None):
     return optional_parser
 
 
-def optional_sequence(*parsers, default=None, at_least=0):
+def optional_sequence(*parsers: Parser, default: Optional[Any] = None, at_least: int = 0) -> Parser:
     @Parser
-    def optional_sequence_parser(stream, pos):
+    def optional_sequence_parser(stream: str, pos: int) -> Result:
         start = pos
 
         count = 0
@@ -106,13 +108,13 @@ def optional_sequence(*parsers, default=None, at_least=0):
     return optional_sequence_parser
 
 
-def times(parser, minimum, *args):
+def times(parser: Parser, minimum: int, *args) -> Parser:
     maximum = args[0] if args else minimum
     if maximum is None:
         maximum = sys.maxsize
 
     @Parser
-    def times_parser(stream, pos):
+    def times_parser(stream: str, pos: int) -> Result:
         start = pos
 
         count = 0
@@ -134,9 +136,9 @@ def times(parser, minimum, *args):
     return times_parser
 
 
-def lookahead(parser):
+def lookahead(parser: Parser) -> Parser:
     @Parser
-    def lookahead_parser(stream, pos):
+    def lookahead_parser(stream: str, pos: int) -> Result:
         result = parser(stream, pos)
         if result:
             return Success(pos, pos, result.value)
@@ -146,9 +148,9 @@ def lookahead(parser):
     return lookahead_parser
 
 
-def transform(parser, function):
+def transform(parser: Parser, function: Callable[[Any], Any]) -> Parser:
     @Parser
-    def transform_parser(stream, pos):
+    def transform_parser(stream: str, pos: int) -> Result:
         result = parser(stream, pos)
         if result:
             return Success(pos, result.end, function(result.value))
@@ -158,9 +160,9 @@ def transform(parser, function):
     return transform_parser
 
 
-def negate(parser):
+def negate(parser: Parser) -> Parser:
     @Parser
-    def negate_parser(stream, pos):
+    def negate_parser(stream: str, pos: int) -> Result:
         result = parser(stream, pos)
         if result:
             return Failure(pos, "Not {}".format(repr(result.value)))
@@ -170,5 +172,5 @@ def negate(parser):
     return negate_parser
 
 
-def combine(parser):
+def combine(parser: Parser) -> Parser:
     return transform(parser, lambda items: "".join(stringify(items)))
