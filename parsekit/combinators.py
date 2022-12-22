@@ -1,6 +1,7 @@
 import sys
 
 from parsekit import Failure, Parser, Success
+from parsekit.utils import stringify
 
 
 def then(*parsers):
@@ -167,3 +168,7 @@ def negate(parser):
             return Success(pos, pos, None)
 
     return negate_parser
+
+
+def combine(parser):
+    return transform(parser, lambda items: "".join(stringify(items)))
