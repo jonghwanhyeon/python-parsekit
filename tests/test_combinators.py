@@ -3,7 +3,7 @@ from parsekit import *
 
 def test_then():
     parser = then(
-        string("let"),
+        literal("let"),
         regex(r"\s+"),
         regex(r"[A-Za-z\_][A-Za-z0-9\_]*"),
     )
@@ -12,7 +12,7 @@ def test_then():
     parser = then(
         parser,
         regex(r"\s*"),
-        string("="),
+        literal("="),
         regex(r"\s*"),
         regex(r"[0-9]+"),
     )
@@ -22,7 +22,7 @@ def test_then():
 
 def test_skip():
     parser = skip(
-        string("let"),
+        literal("let"),
         regex(r"\s+"),
         regex(r"[A-Za-z\_][A-Za-z0-9\_]*"),
     )
@@ -31,7 +31,7 @@ def test_skip():
     parser = skip(
         parser,
         regex(r"\s*"),
-        string("="),
+        literal("="),
         regex(r"\s*"),
         regex(r"[0-9]+"),
     )
@@ -40,7 +40,7 @@ def test_skip():
 
 def test_sequence():
     parser = sequence(
-        string("let"),
+        literal("let"),
         regex(r"\s+"),
         regex(r"[A-Za-z\_][A-Za-z0-9\_]*"),
     )
@@ -49,7 +49,7 @@ def test_sequence():
     parser = sequence(
         parser,
         regex(r"\s*"),
-        string("="),
+        literal("="),
         regex(r"\s*"),
         regex(r"[0-9]+"),
     )
@@ -58,8 +58,8 @@ def test_sequence():
 
 def test_either():
     parser = either(
-        string("let"),
-        string("var"),
+        literal("let"),
+        literal("var"),
         regex("int|float|double"),
     )
     assert parser("let") == Success(0, 3, "let")
@@ -78,13 +78,13 @@ def test_either():
 
 def test_optional():
     parser = then(
-        string("let"),
+        literal("let"),
         regex(r"\s+"),
         regex(r"[A-Za-z\_][A-Za-z0-9\_]*"),
         optional(
             then(
                 regex(r"\s*"),
-                string("="),
+                literal("="),
                 regex(r"\s*"),
                 regex(r"[0-9]+"),
             )
@@ -99,7 +99,7 @@ def test_optional():
 def test_optional_sequence():
     element = then(
         regex(r"\s*"),
-        optional(string(",")),
+        optional(literal(",")),
         regex(r"\s*"),
         either(
             regex(r"[A-Za-z\_][A-Za-z0-9\_]*"),
@@ -109,10 +109,10 @@ def test_optional_sequence():
 
     parser = skip(
         then(
-            string("("),
+            literal("("),
             optional_sequence(element, element, element),
         ),
-        string(")"),
+        literal(")"),
     )
     assert parser("()") == Success(0, 2, [None, None, None])
     assert parser("(1)") == Success(0, 3, ["1", None, None])
@@ -120,10 +120,10 @@ def test_optional_sequence():
 
     parser = skip(
         then(
-            string("("),
+            literal("("),
             optional_sequence(element, element, element, at_least=2),
         ),
-        string(")"),
+        literal(")"),
     )
     assert parser("()") == Failure(1, None)
     assert parser("(1)") == Failure(1, None)
@@ -133,14 +133,14 @@ def test_optional_sequence():
 def test_lookahead():
     parser = skip(
         then(
-            string("let"),
+            literal("let"),
             regex(r"\s+"),
             regex(r"[A-Za-z\_][A-Za-z0-9\_]*"),
         ),
         lookahead(
             sequence(
                 regex(r"\s*"),
-                string("="),
+                literal("="),
                 regex(r"\s*"),
                 regex(r"[0-9]+"),
             )
@@ -154,11 +154,11 @@ def test_lookahead():
 
 def test_transform():
     parser = then(
-        string("let"),
+        literal("let"),
         regex(r"\s+"),
         regex(r"[A-Za-z\_][A-Za-z0-9\_]*"),
         regex(r"\s*"),
-        string("="),
+        literal("="),
         regex(r"\s*"),
         regex(r"[0-9]+"),
     ).map(int)
@@ -176,12 +176,12 @@ def test_times():
     times(3, None)
     """
     parser = then(
-        string("let"),
+        literal("let"),
         regex(r"\s+"),
         times(
             then(
                 regex(r"\s*"),
-                optional(string(",")),
+                optional(literal(",")),
                 regex(r"\s*"),
                 regex(r"[A-Za-z\_][A-Za-z0-9\_]*"),
             ),
@@ -192,12 +192,12 @@ def test_times():
     assert parser("let foo, bar, baz") == Success(0, 7, ["foo"])
 
     parser = then(
-        string("let"),
+        literal("let"),
         regex(r"\s+"),
         times(
             then(
                 regex(r"\s*"),
-                optional(string(",")),
+                optional(literal(",")),
                 regex(r"\s*"),
                 regex(r"[A-Za-z\_][A-Za-z0-9\_]*"),
             ),
@@ -209,12 +209,12 @@ def test_times():
     assert parser("let foo, bar, baz, qux, quux, corge") == Success(0, 17, ["foo", "bar", "baz"])
 
     parser = then(
-        string("let"),
+        literal("let"),
         regex(r"\s+"),
         times(
             then(
                 regex(r"\s*"),
-                optional(string(",")),
+                optional(literal(",")),
                 regex(r"\s*"),
                 regex(r"[A-Za-z\_][A-Za-z0-9\_]*"),
             ),
@@ -227,12 +227,12 @@ def test_times():
     assert parser("let foo, bar, baz, qux, quux, corge") == Success(0, 17, ["foo", "bar", "baz"])
 
     parser = then(
-        string("let"),
+        literal("let"),
         regex(r"\s+"),
         times(
             then(
                 regex(r"\s*"),
-                optional(string(",")),
+                optional(literal(",")),
                 regex(r"\s*"),
                 regex(r"[A-Za-z\_][A-Za-z0-9\_]*"),
             ),
@@ -245,12 +245,12 @@ def test_times():
     assert parser("let foo, bar, baz, qux, quux, corge") == Success(0, 28, ["foo", "bar", "baz", "qux", "quux"])
 
     parser = then(
-        string("let"),
+        literal("let"),
         regex(r"\s+"),
         times(
             then(
                 regex(r"\s*"),
-                optional(string(",")),
+                optional(literal(",")),
                 regex(r"\s*"),
                 regex(r"[A-Za-z\_][A-Za-z0-9\_]*"),
             ),
@@ -262,12 +262,12 @@ def test_times():
     assert parser("let foo, bar, baz") == Success(0, 17, ["foo", "bar", "baz"])
 
     parser = then(
-        string("let"),
+        literal("let"),
         regex(r"\s+"),
         times(
             then(
                 regex(r"\s*"),
-                optional(string(",")),
+                optional(literal(",")),
                 regex(r"\s*"),
                 regex(r"[A-Za-z\_][A-Za-z0-9\_]*"),
             ),

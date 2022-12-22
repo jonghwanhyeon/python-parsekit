@@ -3,15 +3,15 @@ import re
 from . import Failure, Parser, Success
 
 
-def string(text):
+def literal(text):
     @Parser
-    def string_parser(stream, pos):
+    def literal_parser(stream, pos):
         if stream.startswith(text, pos):
             return Success(pos, pos + len(text), text)
         else:
             return Failure(pos, text)
 
-    return string_parser
+    return literal_parser
 
 
 def regex(pattern, flags=0):
