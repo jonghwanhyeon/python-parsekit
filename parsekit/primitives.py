@@ -1,6 +1,6 @@
 import re
 
-from . import Failure, Parser, Success
+from parsekit import Failure, Parser, Success
 
 
 def literal(text):

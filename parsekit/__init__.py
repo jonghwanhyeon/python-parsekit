@@ -61,5 +61,5 @@ class Parser:
         return then(self, other)
 
 
-from .combinators import *  # noqa
-from .primitives import *  # noqa
+from parsekit.combinators import *  # noqa
+from parsekit.primitives import *  # noqa

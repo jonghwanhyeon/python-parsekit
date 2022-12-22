@@ -1,6 +1,6 @@
 import sys
 
-from . import Failure, Parser, Success
+from parsekit import Failure, Parser, Success
 
 
 def then(*parsers):
@@ -162,7 +162,7 @@ def negate(parser):
     def negate_parser(stream, pos):
         result = parser(stream, pos)
         if result:
-            return Failure(pos, 'Not {}'.format(repr(result.value)))
+            return Failure(pos, "Not {}".format(repr(result.value)))
         else:
             return Success(pos, pos, None)
 
