@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterable, NamedTuple, Tuple, Union
+from typing import TYPE_CHECKING, Any, Iterable, List, NamedTuple, Tuple, Union
 
 if TYPE_CHECKING:
     from parsekit.typing import Result
@@ -49,6 +49,9 @@ class Parser:
                     pos += 1
             else:  # -> Failure
                 pos += 1
+
+    def findall(self, stream: str, pos: int = 0) -> List[Success]:
+        return [*self.finditer(stream, pos)]
 
     def map(self, function: Callable[[Any], Parser]) -> Parser:
         return transform(self, function)
