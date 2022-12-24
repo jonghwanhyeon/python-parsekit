@@ -1,9 +1,8 @@
 import sys
 from typing import Any, Callable, Optional
 
-from parsekit import Failure, Parser, Success
+from parsekit import Failure, Parser, Success, utils
 from parsekit.typing import Result
-from parsekit.utils import stringify
 
 
 def then(*parsers: Parser) -> Parser:
@@ -173,4 +172,8 @@ def negate(parser: Parser) -> Parser:
 
 
 def combine(parser: Parser) -> Parser:
-    return transform(parser, lambda items: "".join(stringify(items)))
+    return transform(parser, lambda items: "".join(utils.stringify(utils.flatten(items))))
+
+
+def flatten(parser: Parser) -> Parser:
+    return transform(parser, lambda items: [*utils.flatten(items)])
