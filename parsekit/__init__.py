@@ -53,6 +53,19 @@ class Parser:
     def findall(self, stream: str, pos: int = 0) -> List[Success]:
         return [*self.finditer(stream, pos)]
 
+    def transform(self, stream: str, pos: int = 0) -> str:
+        output = []
+
+        last_pos = 0
+        for result in self.finditer(stream, pos):
+            output.append(stream[last_pos : result.start])
+            output.append(result.value)
+            last_pos = result.end
+
+        output.append(stream[last_pos:])
+
+        return "".join(output)
+
     def map(self, function: Callable[[Any], Parser]) -> Parser:
         return transform(self, function)
 
