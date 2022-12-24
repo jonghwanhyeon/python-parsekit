@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Iterable, List, NamedTuple, Tuple, Union
 if TYPE_CHECKING:
     from parsekit.typing import Result
 
-__version__ = "1.0.0"
+__version__ = "1.2.0"
 
 
 class Success(NamedTuple):
